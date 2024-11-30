@@ -1,0 +1,26 @@
+<h1 class="table-caption">Загальний розклад</h1>
+  <div class="table-container">
+    <table id="schedule-table">
+      <thead>
+        <tr>
+          <th colspan="2"></th>
+          <th >1/2 тиждень</th>
+          <th *ngFor="let group of groups">{{group.name}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let num of utils.getRange(1, 60);">
+          <td class="weekday" rowspan="12" *ngIf="num%12==1"><span>{{ weekdays[utils.floor(num/12)] }}</span></td>
+          <td rowspan="2" *ngIf="num%2==1"><div class="lessonOrder">{{ schdlConverter.chooseLessonOrder(num) }}</div></td>
+          <td class="weekorder" *ngIf="num%2==1; else elseBlock">{{ 1 }}</td>
+            <ng-template #elseBlock><td class="weekorder">{{ 2 }}</td></ng-template>
+          <td *ngFor="let it of groupIds">
+              {{ checkFacultySchedule(utils.ceil(num/12),num%2==1 ? false : true,schdlConverter.chooseLessonOrder(num),it)}}
+              <p class="namesubj">{{ schdlConverter.lesInfo }}</p>
+              <p class="subj">{{schdlConverter.subject}}</p>
+              <p class="typeaud">{{schdlConverter.typeAud}}</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

@@ -1,0 +1,18 @@
+<div class="form-container">
+    <h2>Звіт за тиждень</h2>
+    <div class="form-content">
+      <label>
+        <input type="checkbox" [(ngModel)]="checkbox1" />
+        Включити деталі студентів
+      </label>
+      <br />
+      <label>
+        <input type="checkbox" [(ngModel)]="checkbox2" />
+        Включити події викладачів
+      </label>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-success" (click)="sendRequest()">Згенерувати звіт</button>
+      <button class="btn btn-primary" routerLink="../..">Назад до списку</button>
+    </div>
+  </div>

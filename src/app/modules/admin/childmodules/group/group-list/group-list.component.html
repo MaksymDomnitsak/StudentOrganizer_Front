@@ -1,0 +1,48 @@
+<div class="container">
+    <h1>Групи</h1>
+    <p>
+      <button class="btn btn-primary" routerLink="new">Додати групу</button>
+    </p>
+    <table class="table">
+      <tbody>
+        <div *ngIf="groups.length != 0; else noGroupsBlock">
+          <tr>
+            <th>ID</th>
+            <th>Назва групи</th>
+            <th>Disabled</th>
+            <th colspan="2"></th>
+          </tr>
+          <tr *ngFor="let group of groups; index as ind">
+            <td>{{ group.id }}</td>
+            <td>{{ group.name }}</td>
+            <td>{{ group.disabled }}</td>
+            <td>
+              <button class="btn btn-primary" [routerLink]="['edit/' + group.id]">Редагувати</button>
+            </td>
+            <td>
+              <button class="btn btn-danger" (click)="openConfirmDeleteModal(group, ind)">Видалити</button>
+  
+              <ng-template #confirmDeleteModal let-modal>
+                <div class="modal-header">
+                  <h4 class="modal-title">Видалення</h4>
+                </div>
+                <div class="modal-body">
+                  Ви дійсно хочете видалити цю групу?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" (click)="cancelModal()">Відміна</button>
+                  <button type="submit" class="btn btn-danger" (click)="onDeleteConfirmed()">Видалити</button>
+                </div>
+              </ng-template>
+            </td>
+          </tr>
+        </div>
+        <ng-template #noGroupsBlock>
+          <tr>
+            <td colspan="3">Немає груп</td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+    <button class="btn btn-primary" routerLink="..">Назад до списку</button>
+  </div>
