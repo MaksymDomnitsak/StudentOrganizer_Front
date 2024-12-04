@@ -10,7 +10,7 @@ import { NoteService } from '../../note/services/note.service';
 import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
 import { GroupNote } from 'src/app/models/groupnote';
 import { Router } from '@angular/router';
-import { ScheduleWithTime } from 'src/app/models/scheduleWithTime';
+import { EventCustom } from 'src/app/models/scheduleWithTime';
 
 @Component({
   selector: 'app-create-group-note',
@@ -19,7 +19,7 @@ import { ScheduleWithTime } from 'src/app/models/scheduleWithTime';
 })
 export class CreateGroupNoteComponent {
   noteForm!: FormGroup;
-  schedule: ScheduleWithTime[] = [];
+  schedule: EventCustom[] = [];
   groups: Group[] = [];
   students: Student[] = [];
   daysList = EXTRA_ARRAYS.weekdays;
@@ -33,6 +33,7 @@ export class CreateGroupNoteComponent {
      private router: Router) {
       //this.schedule = scheduleService.getScheduleWithTimebyCreator(this.auth.userProfile.value.userId);
       groupService.getGroupsByTeacherId(this.auth.userProfile.value.userId).subscribe((response: Group[]) => {response.forEach((item)=>this.groups.push(item));});
+      console.log(this.groups)
       studentService.getStudents().subscribe((response: Student[]) => {response.forEach((item)=>this.students.push(item));});
    }
 
@@ -57,7 +58,7 @@ export class CreateGroupNoteComponent {
     }
   }
 
-  readLesson(lesson:ScheduleWithTime){
+  readLesson(lesson:EventCustom){
     // return lesson.subject.name+", "+this.daysList[lesson.dayOfWeek-1].toString()+", "+lesson.typeOfLesson;
   }
 }

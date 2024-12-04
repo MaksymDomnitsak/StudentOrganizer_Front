@@ -1,4 +1,4 @@
-import { Component,OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component,OnInit} from '@angular/core';
 import { SaveUser } from './models/saveUser';
 import { AuthService } from './modules/auth/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,10 +11,10 @@ import { CookieService } from './services/cookie.service';
 })
 export class AppComponent implements OnInit{
   userInfo?: SaveUser;
-  title = 'PlannerScheduler';
+  title = 'StudentOrganizer';
   currentRoute!: string;
 
-  constructor(private auth: AuthService,private route: ActivatedRoute,private router: Router, private cookie: CookieService) {
+  constructor(private auth: AuthService,private route: ActivatedRoute,private router: Router, private cookie: CookieService,private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {

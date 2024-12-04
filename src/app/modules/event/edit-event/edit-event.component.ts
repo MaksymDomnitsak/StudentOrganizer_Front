@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Note } from 'src/app/models/note';
 import { ScheduleService } from 'src/app/services/schedule.service';
 import { AuthService } from '../../auth/services/auth.service';
-import { ScheduleWithTime } from 'src/app/models/scheduleWithTime';
+import { EventCustom } from 'src/app/models/scheduleWithTime';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
 import { Group } from 'src/app/models/group';
@@ -58,7 +58,7 @@ export class EditEventComponent {
     });
   }
 
-  setFormValues(data: ScheduleWithTime){
+  setFormValues(data: EventCustom){
     this.eventId = data.id;
     this.eventForm.get('subjects')?.setValue(data.subject.id);
     // this.eventForm.get('title')?.setValue(data.customTitle);

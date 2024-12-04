@@ -2,10 +2,10 @@
 <p>
   <button class="btn btn-primary" routerLink="new">Створити подію</button>
   <button *ngIf="userRole == 'TEACHER'" class="btn btn-primary" routerLink="newNote">Групове створення нотаток</button>
-  <button *ngIf="userRole == 'ADMIN'" class="btn btn-primary" routerLink="report" >Звіт за тиждень</button>
+  <button *ngIf="userRole == 'ADMIN' || userRole == 'TEACHER'" class="btn btn-primary" routerLink="report" >Звіт за тиждень</button>
 </p>
 <ul class="nav nav-tabs"> <!--тільки для викладача зробити-->
-  <li class="nav-item" >
+  <li class="nav-item" *ngIf="userRole == 'ADMIN' || userRole == 'TEACHER'">
     <a class="nav-link" (click)="changeTab('tab1')">
       {{"Мій розклад"}}
     </a>
@@ -55,20 +55,19 @@
 </div>
 
 
-<!-- <div class="table-container" *ngIf="activeTab === 'tab2'">
+<div class="table-container" *ngIf="activeTab === 'tab2'">
   <table>
-    <tr><th>Предмет/назва</th><th>Група</th>
-      <th>День тижня</th><th>Початок та кінець події</th>
-      <th>Тип події</th><th>Номер аудиторії</th><th>Запрошені</th><th></th></tr>
-      <tr *ngFor="let event of schedule; index as ind">{{setValues(event)}}
+    <tr><th>Назва</th><th>Предмет</th>
+      <th>Початок та кінець події</th>
+      <th>Номер аудиторії</th><th></th></tr>
+      <tr *ngFor="let event of events; index as ind">{{setValuesOfCustom(event)}}
+        <td>{{title}}</td>
       <td>{{subjectName}} </td>
-      <td>{{groupName}} </td>
-      <td> {{dayOfWeek}}</td>
-      <td>{{time}} </td><td>{{typeOfEvent}} </td>
-      <td>{{auditory}} </td><td>{{attendees}} </td><td>
-        <button class="btn btn-primary" [routerLink]="['edit/'+event.id]" [disabled]="isDisabled(event)">Змінити</button>
-        <button *ngIf="userRole == 'TEACHER'" class="btn btn-primary" [routerLink]="['import/'+event.id]">Імпорт в GC</button>
-        <button *ngIf="isCustomEvent(event)" class="btn btn-primary" (click)="openConfirmDeleteModal(event,ind)">
+      <td>{{startTime+" - "+endTime}} </td>
+      <td>{{auditory}} </td><td>
+        <button class="btn btn-primary" [routerLink]="['edit/'+event.id]">Змінити</button>
+        <button class="btn btn-primary" [routerLink]="['import/'+event.id]">Імпорт в GC</button>
+        <button class="btn btn-primary" (click)="openConfirmDeleteModal(event,ind)">
           Видалити
         </button>
         <ng-template #confirmDeleteModal let-modal>
@@ -90,16 +89,18 @@
 
 <div class="table-container" *ngIf="activeTab === 'tab3'">
   <table>
-    <tr><th>Предмет/назва</th><th>Відповідальний за подію</th>
-      <th>День тижня</th><th>Початок та кінець події</th>
-      <th>Тип події</th><th>Номер аудиторії</th><th>Запрошені</th></tr>
-      <tr *ngFor="let event of schedule">{{setValues(event)}}
-      <td>{{subjectName}} </td><td>{{creatorName}}</td><td> {{dayOfWeek}}</td>
-      <td>{{time}} </td><td>{{typeOfEvent}} </td>
-      <td>{{auditory}} </td><td>{{attendees}} </td>
+    <tr><th>Назва</th><th>Відповідальний за подію</th>
+      <th>Предмет</th><th>Початок та кінець події</th>
+      <th>Номер аудиторії</th></tr>
+      <tr *ngFor="let event of events">{{setValuesOfAttendees(event)}}
+        <td>{{title}}</td>
+        <td>{{creatorName}}</td>
+        <td>{{subjectName}} </td>
+        <td>{{startTime+" - "+endTime}} </td>
+        <td>{{auditory}} </td>
     </tr>
 </table>
-</div> -->
+</div> -
 </div>
 
 

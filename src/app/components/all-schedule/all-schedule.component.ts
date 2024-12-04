@@ -60,6 +60,7 @@ export class AllScheduleComponent {
   }
 
   ngOnInit(){
+    console.log("all-schedule")
     this.readDB();
   }
 

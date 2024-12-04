@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, TemplateRef, ViewChild } from '@angular/c
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
-import { ScheduleWithTime } from 'src/app/models/scheduleWithTime';
+import { EventCustom } from 'src/app/models/scheduleWithTime';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { ScheduleService } from 'src/app/services/schedule.service';
@@ -17,13 +17,13 @@ export class ScheduleListComponent {
   @ViewChild('confirmDeleteModal')
   confirmDeleteModal!: TemplateRef<any>;
 
-  eventForDelete: ScheduleWithTime | undefined;
+  eventForDelete: EventCustom | undefined;
   indexForDelete!: number;
   userRole!: string;
 
   activeTab = "tab1";
   utils:ExtraUtils;
-  schedule: ScheduleWithTime[] = [];
+  schedule: EventCustom[] = [];
   subjectName: String = "";
   groupName: String = "";
   creatorName: String = "";
@@ -44,7 +44,7 @@ export class ScheduleListComponent {
     //this.schedule = this.scheduleService.getAll();
   }
 
-  setValues(event:ScheduleWithTime){
+  setValues(event:EventCustom){
     // this.subjectName = event.customTitle === null ? event.subject.name : event.customTitle;
     // this.groupName = !event.group ? "-" : event.group.name;
     // this.creatorName = event.creator.firstName + " " + event.creator.lastName;
@@ -59,7 +59,7 @@ export class ScheduleListComponent {
       })
       this.attendees=this.attendees.slice(1,this.attendees.length-2);
     }
-    this.auditory = !event.online ? event.auditoryNumber : "Онлайн";
+    this.auditory = !event.isOnline ? event.auditoryNumber : "Онлайн";
   }
 
   ngAfterContentChecked(): void {
@@ -68,7 +68,7 @@ export class ScheduleListComponent {
     this.cdr.detectChanges();
    }
 
-  openConfirmDeleteModal(event:ScheduleWithTime,index:number) {
+  openConfirmDeleteModal(event:EventCustom,index:number) {
     this.eventForDelete = event;
     this.indexForDelete = index;
     this.modalService.open(this.confirmDeleteModal);

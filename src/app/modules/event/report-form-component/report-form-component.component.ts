@@ -4,6 +4,7 @@ import { MakeReportService } from '../services/make-report.service';
 import { AuthService } from '../../auth/services/auth.service';
 import { ReportDto } from 'src/app/models/report';
 import { Router } from '@angular/router';
+import { Document } from "src/app/models/document";
 
 @Component({
   selector: 'app-report-form-component',
@@ -13,6 +14,8 @@ import { Router } from '@angular/router';
 export class ReportFormComponentComponent {
   checkbox1: boolean = false; 
   checkbox2: boolean = false; 
+  isReportReady: boolean = false;
+  reportUrl: string = '';
 
   constructor(private service: MakeReportService, private auth: AuthService, private router:Router) {}
 
@@ -30,9 +33,20 @@ export class ReportFormComponentComponent {
         setOnline: params.setOnline,
         setTopic: params.setTopic
       };
-    const id = this.service.sendRequest(rep)
-    
-    this.router.navigateByUrl('/event-page');
+      this.service.sendRequest(rep).subscribe((response: Document) => {
+      this.isReportReady = true;
+      this.reportUrl = `https://docs.google.com/document/d/${response.documentId}`; 
+  }
+);
+  }
+}
+
+openReport(){
+  if (this.reportUrl) {
+    window.open(this.reportUrl, '_blank');
+    this.router.navigate(['/event-page']);
+  } else {
+    console.error('Report URL is not ready.');
   }
 }
 

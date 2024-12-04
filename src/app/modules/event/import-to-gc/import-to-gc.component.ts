@@ -7,7 +7,7 @@ import { ImportGCService } from '../services/import-gc.service';
 import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ScheduleWithTime } from 'src/app/models/scheduleWithTime';
+import { EventCustom } from 'src/app/models/scheduleWithTime';
 import { EventGoogleCalendar } from 'src/app/models/eventGoogleCalendar';
 import { AuthService } from '../../auth/services/auth.service';
 import { GroupWithStudents } from 'src/app/models/groupWithStudents';

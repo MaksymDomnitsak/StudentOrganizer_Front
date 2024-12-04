@@ -12,6 +12,8 @@ import { SaveUserWithoutGroup } from 'src/app/models/saveUserWithoutGroup';
 export class AuthService {
 
   AUTH_URI: string = "api/userstokens"
+  private userRoleSubject = new BehaviorSubject<string>('');
+  userRole$ = this.userRoleSubject.asObservable();
   constructor(private http: HttpClient,private route:Router,) {}
 
   userProfile: BehaviorSubject<any> = new BehaviorSubject<any>({
@@ -29,16 +31,6 @@ export class AuthService {
 
   login() {
     window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code&client_id=931292101113-047eg39rj4ihlcdoluc7j91p55586nm9.apps.googleusercontent.com&scope=email%20openid%20profile%20https://www.googleapis.com/auth/documents%20https://www.googleapis.com/auth/calendar%20https://www.googleapis.com/auth/meetings.space.created&state=-5dhuU2S57_pO3PbQ6aKyb2cEc23kuIq3goDyfGje9I%3D&redirect_uri=http://localhost:8080/api/oauth/callback/google&nonce=iLYhxaLWpKdBRCaH7MJFpVrekTtD6Aai1sTJMJexMYI';
-    /*authFlow.subscribe({
-      next: (user: SaveUser) => {
-        this.saveUserToLocalStorage(user);
-        console.log(user);
-        this.route.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });*/
   }
 
   getTokens(email: string): void {

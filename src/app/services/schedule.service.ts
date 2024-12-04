@@ -1,11 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Schedule } from '../models/schedule';
-import { map,tap } from 'rxjs/operators';
-import { JsonPipe } from '@angular/common';
-import { ScheduleWithTime } from '../models/scheduleWithTime';
-import { CustomEventResponse } from '../models/customEventResponse';
 import { EventsPage } from '../models/eventsPage';
 
 @Injectable({

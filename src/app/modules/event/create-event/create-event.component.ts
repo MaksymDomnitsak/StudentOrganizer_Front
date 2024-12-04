@@ -29,7 +29,7 @@ export class CreateEventComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,private groupService:GroupService, private scheduleService: ScheduleService, private authService:AuthService,
     private userService:UserService,private router:Router, private subjectService: SubjectService, private utils:ExtraUtils) {
       this.subjectService.getSubjectsByTeacherId(this.authService.userProfile.value.userId).subscribe((data: Subject[]) => data.forEach((item) => this.subjects.push(item)))
-      this.groupService.getGroups().subscribe((data: Group[]) => data.forEach((item) => this.groups.push(item)));
+      this.groupService.getGroupsEnabled().subscribe((data: Group[]) => data.forEach((item) => this.groups.push(item)));
       this.userService.getUsers().subscribe((data: User[]) => data.forEach((item) => this.attendees.push(item)));
    }
 
@@ -38,13 +38,11 @@ export class CreateEventComponent implements OnInit {
       title: ['', Validators.required],
       subjects: [0],
       attendees: [[]],
-      groups: [0],
+      groups: [[]],
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
       eventMode: ['online'],
-      roomNumber: ['']},
-      { validators: atLeastOneValidator(['attendees', 'groups'])
-    });
+      roomNumber: ['']});
   }
 
   createEvent() {

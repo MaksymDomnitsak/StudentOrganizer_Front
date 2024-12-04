@@ -3,16 +3,19 @@
     <div class="form-content">
       <label>
         <input type="checkbox" [(ngModel)]="checkbox1" />
-        Включити деталі студентів
+        Включити місце проведення в звіт
       </label>
       <br />
       <label>
         <input type="checkbox" [(ngModel)]="checkbox2" />
-        Включити події викладачів
+        Включити тему в звіт
       </label>
     </div>
     <div class="form-actions">
       <button class="btn btn-success" (click)="sendRequest()">Згенерувати звіт</button>
-      <button class="btn btn-primary" routerLink="../..">Назад до списку</button>
+      <button class="btn btn-primary" routerLink="..">Назад до списку</button>
+    </div>
+    <div class="form-actions report">
+      <button class="btn btn-primary" [disabled]="!isReportReady" (click)="openReport()">Відкрити звіт</button>
     </div>
   </div>

@@ -11,7 +11,7 @@ export class ScheduleFindFormDataService {
   lesInfo = "";
   subject = "";
   typeAud = "";
-  groupList = " ";
+  groupList = "";
   schIt = 0;
   schedule: Schedule[] = [];
 
@@ -57,7 +57,7 @@ export class ScheduleFindFormDataService {
         }else this.typeAud+= "Онлайн)";
         this.groupList="";
         while (this.schIt != this.schedule.length && this.schedule[this.schIt].dayOfWeek==dayOfWeek && this.schedule[this.schIt].evenWeek==evenWeek 
-            && this.schedule[this.schIt].lessonOrder==lessonOrder) 
+            && this.schedule[this.schIt].lessonOrder==lessonOrder ) 
             {
           this.groupList+="\t   "+this.schedule[this.schIt].group.name+ ", ";
           this.schIt++;
@@ -99,7 +99,8 @@ export class ScheduleFindFormDataService {
     }else{
       this.lesInfo=" ";
       this.typeAud=" ";
-      this.subject=" "
+      this.groupList=" ";
+      this.subject=" ";
     }
   }
 

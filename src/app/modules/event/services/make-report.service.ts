@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Document } from "src/app/models/document";
 import { ReportDto } from "src/app/models/report";
 
 @Injectable({
@@ -10,19 +11,7 @@ import { ReportDto } from "src/app/models/report";
     constructor(private http: HttpClient) {}
 
     sendRequest(report: ReportDto) {
-        var id = "";
-        let req = {
-            teacherId: report.teacherId,
-            setOnline: report.setOnline,
-            setTopic: report.setTopic
-        };
-        this.http.post<string>('/api/googleschedule/api/googleDocs/report',req).subscribe(
-            (response: string) => {
-                id = response.toString();
-                console.log(response)
-                window.open('https://docs.google.com/document/d/'+response, '_blank'); //response не розпізнається
-            }
-        );
-        return id;
+         return this.http.post<Document>('/api/googleschedule/api/googleDocs/report',report)
       }
+
   }

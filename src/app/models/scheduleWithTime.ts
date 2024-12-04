@@ -1,17 +1,16 @@
 import { Time } from "@angular/common";
-import { Group } from "./group";
 import { Subject } from "./subject";
 import { User } from "./user";
 
-export interface ScheduleWithTime {
+export interface EventCustom {
     id: number;
     title: string;
-    startTime: Time;
-    endTime: Time;
+    startTime: Date;
+    endTime: Date;
     subject: Subject;
     creator: User;
     attendees: User[]; 
-    online: boolean;
+    isOnline: boolean;
     auditoryNumber: string;
 
   }

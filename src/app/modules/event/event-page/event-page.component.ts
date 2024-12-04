@@ -1,5 +1,5 @@
 import { AfterContentChecked, ChangeDetectorRef, Component,OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ScheduleWithTime } from 'src/app/models/scheduleWithTime';
+import { EventCustom} from 'src/app/models/scheduleWithTime';
 import { AuthService } from '../../auth/services/auth.service';
 import { ScheduleService } from 'src/app/services/schedule.service';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { ExtraUtils } from 'src/app/services/utils';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Schedule } from 'src/app/models/schedule';
 import { MakeReportService } from '../services/make-report.service';
+import { EventService } from 'src/app/services/event.service';
 
 @Component({
   selector: 'app-event-page',
@@ -19,13 +20,14 @@ export class EventPageComponent implements AfterContentChecked {
   @ViewChild('confirmDeleteModal')
   confirmDeleteModal!: TemplateRef<any>;
 
-  eventForDelete: ScheduleWithTime | undefined;
+  eventForDelete: EventCustom | undefined;
   indexForDelete!: number;
   userRole!: string;
 
-  activeTab = "tab1";
+  activeTab = "tab2";
   utils:ExtraUtils;
   schedule: Schedule[] = [];
+  events: EventCustom[] = [];
   subjectName: String = "";
   groupName: String = "";
   creatorName: String = "";
@@ -34,12 +36,15 @@ export class EventPageComponent implements AfterContentChecked {
   typeOfEvent: String = "";
   attendees: String = "";
   auditory: String = "";
+  startTime: string = "";
+  endTime: string = "";
+  title: String = "";
 
   isModalOpen: boolean = false;
   checkbox1: boolean = false;
   checkbox2: boolean = false;
 
-  constructor(private modalService: NgbModal,private service: AuthService, private scheduleService: ScheduleService, private reportService: MakeReportService, private router: Router
+  constructor(private modalService: NgbModal,private service: AuthService, private scheduleService: ScheduleService,private eventService: EventService, private router: Router
     ,utils:ExtraUtils,private cdr: ChangeDetectorRef){
     this.utils=utils;
     
@@ -48,32 +53,53 @@ export class EventPageComponent implements AfterContentChecked {
   ngOnInit(){
     this.userRole = localStorage.getItem("role")!.toString();
     this.schedule = this.scheduleService.getSchedulebyTeacher(this.service.userProfile.value.userId);
+    this.events = this.eventService.getEventsByCreatorId(this.service.userProfile.value.userId);
   }
 
   changeTab(tab:string){
     this.activeTab=tab;
-    if(tab == "tab1") this.scheduleService.getSchedulebyTeacher(this.service.userProfile.value.userId);
-    /*this.schedule = tab === "tab1" ? this.scheduleService.getScheduleWithTimebyCreator(this.service.userProfile.value.userId) :
-      this.scheduleService.getScheduleByAttendee(this.service.userProfile.value.email);*/
+    if(tab == "tab1") this.schedule = this.scheduleService.getSchedulebyTeacher(this.service.userProfile.value.userId);
+    else if(tab == "tab2") this.events = this.eventService.getEventsByCreatorId(this.service.userProfile.value.userId);
+      else this.events = this.eventService.getEventsByAttendeeId(this.service.userProfile.value.userId);
   }
 
   setValues(event:Schedule){
     this.subjectName = event.subject.name;
     this.groupName = event.group.name;
-    this.dayOfWeek = EXTRA_ARRAYS.weekdays[event.dayOfWeek-1];
+    var week = "";
+    if(event.evenWeek == true){
+      week = " по парному тижню"
+    }else week = " по непарному тижню"
+    this.dayOfWeek = EXTRA_ARRAYS.weekdays[event.dayOfWeek-1] + week;
     this.time = this.chooseLessonOrder(event.lessonOrder);
     this.typeOfEvent = event.typeOfLesson;
     this.attendees = "-";
     this.auditory = !event.online ? event.auditoryNumber : "Онлайн";
   }
 
+  setValuesOfCustom(event:EventCustom){
+    this.subjectName = event.subject == null ? "-" : event.subject.name;
+    this.startTime = event.startTime.toLocaleString().replace("T"," ");
+    this.endTime = event.endTime.toLocaleString().replace("T"," ");
+    this.auditory = !event.isOnline ? event.auditoryNumber : "Онлайн";
+    this.title = event.title;
+  }
+  
+  setValuesOfAttendees(event:EventCustom){
+    this.subjectName = event.subject == null ? "-" : event.subject.name;
+    this.startTime = event.startTime.toLocaleString().replace("T"," ");
+    this.endTime = event.endTime.toLocaleString().replace("T"," ");
+    this.auditory = !event.isOnline ? event.auditoryNumber : "Онлайн";
+    this.title = event.title;
+    this.creatorName = event.creator.lastName + " " + event.creator.firstName
+  }
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();
     this.cdr.detach();
     this.cdr.detectChanges();
    }
 
-  openConfirmDeleteModal(event:ScheduleWithTime,index:number) {
+  openConfirmDeleteModal(event:EventCustom,index:number) {
     this.eventForDelete = event;
     this.indexForDelete = index;
     this.modalService.open(this.confirmDeleteModal);
@@ -82,9 +108,9 @@ export class EventPageComponent implements AfterContentChecked {
   onDeleteConfirmed() {
     this.schedule.splice(this.indexForDelete,1);
     this.modalService.dismissAll(this.confirmDeleteModal);
-    /*this.scheduleService.deleteCustomEvent(this.eventForDelete!.id).subscribe(() => {
+    this.eventService.deleteEvent(this.eventForDelete!.id).subscribe(() => {
       this.router.navigate(['/teachersPage']);
-    });*/
+    });
     
 
   }

@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { ScheduleService } from 'src/app/services/schedule.service';
 import { NoteService } from '../../services/note.service';
-import { Router } from '@angular/router';
+import { Event, Router } from '@angular/router';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { Schedule } from 'src/app/models/schedule';
 import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
-import { ScheduleWithTime } from 'src/app/models/scheduleWithTime';
+import { EventCustom } from 'src/app/models/scheduleWithTime';
 
 @Component({
   selector: 'app-new-note',
@@ -18,7 +18,7 @@ export class NewNoteComponent {
   lessonId: number = 0;
   isFinished:boolean = false;
 
-  scheduleList:ScheduleWithTime[] = [];
+  scheduleList:EventCustom[] = [];
 
   daysList = EXTRA_ARRAYS.weekdays;
 
@@ -27,7 +27,7 @@ export class NewNoteComponent {
       //this.scheduleList=scheduleService.getScheduleWithTimebyGroup(authService.loadUserFromLocalStorage().groupId);
     }
 
-    readLesson(lesson:ScheduleWithTime){
+    readLesson(lesson:EventCustom){
       // return lesson.subject.name+", "+this.daysList[lesson.dayOfWeek-1].toString()+", "+lesson.typeOfLesson;
     }
     

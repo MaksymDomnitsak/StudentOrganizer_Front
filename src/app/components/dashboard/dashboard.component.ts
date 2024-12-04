@@ -1,12 +1,10 @@
-import { Component,Input,OnInit, ChangeDetectorRef, AfterContentChecked, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { Component,Input,OnInit, ChangeDetectorRef, AfterContentChecked, AfterViewChecked } from '@angular/core';
 import { Schedule } from 'src/app/models/schedule';
 import { ScheduleService } from 'src/app/services/schedule.service';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { ExportScheduleService } from 'src/app/services/export-schedule.service';
 import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
 import { ScheduleFindFormDataService } from 'src/app/modules/schedule/services/schedule-find-form-data-service.service';
-import { Group } from 'src/app/models/group';
-import { GroupService } from 'src/app/services/group.service';
 import { ExtraUtils } from 'src/app/services/utils';
 import { Router } from '@angular/router';
 
@@ -16,12 +14,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements AfterContentChecked,AfterViewChecked,OnInit {
-  schedule: Schedule[] = [];
-  
  weekdays = EXTRA_ARRAYS.weekdays;
  schdlConverter: ScheduleFindFormDataService;
  bo: boolean = false;
  utils: ExtraUtils;
+ userRole$ = this.auth.userRole$;
+ 
  
 
  ngAfterContentChecked(): void {
@@ -38,15 +36,17 @@ export class DashboardComponent implements AfterContentChecked,AfterViewChecked,
     utils:ExtraUtils){
       this.schdlConverter = scheduleConverter;
       this.utils = utils;
-      this.readDB();
+      //this.readDB();
   }
 
   ngAfterViewChecked(): void {
     this.schdlConverter.schIt=0;
+
   }
 
   ngOnInit(){
     this.readDB();
+    
 
   }
 
@@ -54,6 +54,7 @@ export class DashboardComponent implements AfterContentChecked,AfterViewChecked,
 
  checkAndOutput(dayOfWeek: number,evenWeek:boolean,lessonOrder:number,outputType: string){
   this.schdlConverter.checkAndOutput(dayOfWeek,evenWeek,lessonOrder,outputType);
+
  }
 
 

@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CustomEventResponse } from 'src/app/models/customEventResponse';
 import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
 import { Group } from 'src/app/models/group';
-import { ScheduleWithTime } from 'src/app/models/scheduleWithTime';
+import { EventCustom } from 'src/app/models/scheduleWithTime';
 import { Subject } from 'src/app/models/subject';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
@@ -35,7 +35,7 @@ export class ScheduleUpdateComponent {
     this.subjectService.getSubjectsByTeacherId(this.authService.userProfile.value.userId).subscribe((data: Subject[]) => data.forEach((item) => this.subjects.push(item)))
     this.groupService.getGroups().subscribe((data: Group[]) => data.forEach((item) => this.groups.push(item)));
     this.userService.getUsers().subscribe((data: User[]) => data.forEach((item) => this.attendees.push(item)));
-    //this.scheduleService.getById(activateRoute.snapshot.params['id']).subscribe((data: ScheduleWithTime) => {this.setFormValues(data);});
+    //this.scheduleService.getById(activateRoute.snapshot.params['id']).subscribe((data: EventCustom) => {this.setFormValues(data);});
   
   }
 
@@ -56,7 +56,7 @@ export class ScheduleUpdateComponent {
     });
   }
 
-  setFormValues(data: ScheduleWithTime){
+  setFormValues(data: EventCustom){
     this.eventId = data.id;
     this.eventForm.get('subjects')?.setValue(data.subject.id);
     // this.eventForm.get('title')?.setValue(data.customTitle);
