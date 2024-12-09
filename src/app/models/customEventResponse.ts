@@ -1,31 +1,22 @@
 export class CustomEventResponse {
-    id!: number;
-    customTitle!: string;
-    subjectId!: number;
-    creatorId!: number;
-    attendees!: string[]; 
-    groupId!: number;
-    dayOfWeek!: number;
-    isEvenWeek: boolean = false;
-    lessonOrder!: number;
-    typeOfLesson!: string;
-    online!: boolean;
-    auditoryNumber!: string;
-    startTime!: string;
-    endTime!: string;
+    id: number;
+    title: string;
+    startTime: Date;
+    endTime: Date;
+    subject?: number;
+    creator: number;
+    attendees: number[]; 
+    isOnline: boolean;
+    auditoryNumber: string;
 
-        constructor(id: number,customTitle: string, subjectid: number = 0, creatorid: number, attendees: string[], groupid: number, dayOfWeek: number, lessonOrder: number = 0,
-            typeOfLesson: string, online: boolean, auditoryNumber: string = "", startTime: string = "", endTime: string = ""){
+        constructor(id: number,title: string, subjectid: number, creatorid: number, attendees: number[],
+            online: boolean, auditoryNumber: string = "", startTime: Date, endTime: Date){
                 this.id = id;
-                this.customTitle = customTitle;
-                this.subjectId = subjectid;
-                this.creatorId = creatorid;
+                this.title = title;
+                this.subject = subjectid;
+                this.creator = creatorid;
                 this.attendees = attendees;
-                this.groupId = groupid;
-                this.dayOfWeek = dayOfWeek;
-                this.lessonOrder = lessonOrder;
-                this.typeOfLesson = typeOfLesson;
-                this.online = online;
+                this.isOnline = online;
                 this.auditoryNumber = auditoryNumber;
                 this.startTime = startTime;
                 this.endTime = endTime;

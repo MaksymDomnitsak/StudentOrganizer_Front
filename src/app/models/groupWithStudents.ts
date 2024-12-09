@@ -1,7 +1,7 @@
-import { Student } from "./student";
+import { StudentWithoutGroup } from "./studentWithoutGroup";
 
 export interface GroupWithStudents{
     id: number;
     name: string;
-    students: Student[];
+    students: StudentWithoutGroup[];
 }

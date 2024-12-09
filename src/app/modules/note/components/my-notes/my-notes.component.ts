@@ -26,7 +26,7 @@ export class MyNotesComponent implements OnInit{
   }
 
   ngOnInit(){
-    this.service.loadNotes(this.auth.loadUserFromLocalStorage().userId).subscribe((response: Note[]) => {this.cleanList();response.forEach((item)=>this.notes.push(item));});
+    this.service.loadNotes(this.auth.userProfile.value.userId).subscribe((response: Note[]) => {this.cleanList();response.forEach((item)=>this.notes.push(item));});
   }
 
   cleanList(){

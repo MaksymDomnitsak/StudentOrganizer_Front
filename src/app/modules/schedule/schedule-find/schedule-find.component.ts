@@ -48,19 +48,20 @@ export class ScheduleFindComponent {
       this.groupService.getGroupsEnabled().subscribe((data: Group[]) => {data.forEach((item) => {
         this.groupIds.push(item.id)
       });});
+      this.groupList
   }
 
   ngOnInit(){
     this.findSchedule = this.formBuilder.group({
       teacherSelect: [''],
-      groupSelect: ['']
+      groupSelect: [0]
     });
     
     this.getAllSchedule();
     this.findSchedule.get('teacherSelect')!.valueChanges.subscribe(value => {
       if (value) {
         this.findSchedule.get('groupSelect')!.reset();
-        this.findSchedule.get('groupSelect')!.setValue("");
+        this.findSchedule.get('groupSelect')!.setValue(0);
         
       }
     });
@@ -83,8 +84,9 @@ export class ScheduleFindComponent {
 
   getScheduleByTeacherOrGroup(){
     this.allSchedule = false;
-    if(this.findSchedule.get('groupSelect')!.value !== ''){
-      this.schdlConverter.schedule = this.scheduleService.getSchedulebyGroup(this.findSchedule.get('groupSelect')!.value);
+    if(this.findSchedule.get('groupSelect')!.value !== 0){
+      var value = this.findSchedule.get('groupSelect')!.value
+      this.schdlConverter.schedule = this.scheduleService.getSchedulebyGroup(value.toString());
     }
       else if(this.findSchedule.get('teacherSelect')!.value !== ''){
         this.schdlConverter.schedule=this.scheduleService.getSchedulebyTeacher(this.findSchedule.get('teacherSelect')!.value);
@@ -100,10 +102,10 @@ export class ScheduleFindComponent {
     this.scheduleService.getSchedule();
     this.schdlConverter.schedule = this.scheduleService.schedule;
     console.log(this.schdlConverter.schedule)
-    if(this.findSchedule.get('groupSelect')!.value !== '' || this.findSchedule.get('teacherSelect')!.value !== ''){
+    if(this.findSchedule.get('groupSelect')!.value !== 0 || this.findSchedule.get('teacherSelect')!.value !== ''){
       this.findSchedule.reset();
       this.findSchedule.get('teacherSelect')!.setValue("");
-      this.findSchedule.get('groupSelect')!.setValue("");
+      this.findSchedule.get('groupSelect')!.setValue(0);
     }
     this.changeDetector.detectChanges();
 
@@ -123,6 +125,10 @@ export class ScheduleFindComponent {
 
   checkFacultySchedule(dayOfWeek: number,evenWeek:boolean,lessonOrder:number,groupId: number){
     this.schdlConverter.checkFacultySchedule(dayOfWeek,evenWeek,lessonOrder,groupId);
+   }
+
+   readGroupName(id:number){
+    return this.groupList.find((g) => g.id === id)?.name;
    }
 
 }

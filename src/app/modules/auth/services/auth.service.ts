@@ -48,8 +48,6 @@ export class AuthService {
         localStorage.setItem("user", JSON.stringify(userWithoutGroupId));
         localStorage.setItem("role", userWithoutGroupId.role)
         
-        
-        //this.route.navigate(['/dashboard']);
         const updatedProfile = {
           userId: user.userId,
         email: user.email,
@@ -69,12 +67,15 @@ export class AuthService {
     });
     this.isTokenReady.next(true);
     localStorage.setItem("user", JSON.stringify(userWithoutGroupId))
-    if(localStorage.getItem("role") == "STUDENT"){
-    this.http.get<number>("api/studgroups/api/students/byEmail").subscribe({
+    console.log(userWithoutGroupId.role)
+    if(userWithoutGroupId.role == "STUDENT"){
+      
+    this.http.get<number>("api/studgroups/api/students/byEmail?email="+userWithoutGroupId.email).subscribe({
       next: (id: number) => {
-        userWithoutGroupId.groupId = id;
+        localStorage.setItem("groupId",id.toString())
       }
     })
+    
     }
   }
 

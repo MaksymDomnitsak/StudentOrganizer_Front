@@ -109,7 +109,7 @@ export class EventPageComponent implements AfterContentChecked {
     this.schedule.splice(this.indexForDelete,1);
     this.modalService.dismissAll(this.confirmDeleteModal);
     this.eventService.deleteEvent(this.eventForDelete!.id).subscribe(() => {
-      this.router.navigate(['/teachersPage']);
+      this.router.navigate(['/event-page']);
     });
     
 

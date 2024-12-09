@@ -3,6 +3,7 @@
     <p>
       <button class="btn btn-primary" routerLink="new">Додати групу</button>
     </p>
+    <div class="table-container">
     <table class="table">
       <tbody>
         <div *ngIf="groups.length != 0; else noGroupsBlock">
@@ -44,5 +45,6 @@
         </ng-template>
       </tbody>
     </table>
+  </div>
     <button class="btn btn-primary" routerLink="..">Назад до списку</button>
   </div>

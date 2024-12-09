@@ -27,10 +27,6 @@ export class GroupService {
     return this.http.get<Group[]>(url);
   }
 
-  getGroupsByTeacherId(teacherId: number) {
-    const url = "/api/group?teacherId="+teacherId;
-    return this.http.get<Group[]>(url);
-  } 
   deleteGroup(id: number): Observable<void> {
     return this.http.delete<void>(`/api/studgroups/api/groups/${id}`);
   }

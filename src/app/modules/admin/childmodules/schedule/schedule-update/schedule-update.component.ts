@@ -90,9 +90,9 @@ export class ScheduleUpdateComponent {
         startTime = this.utils.startTimeFromNumber(this.eventForm.get("classPeriod")?.value);
         endTime = this.utils.endTimeFromNumber(this.eventForm.get("classPeriod")?.value);
       }
-      let event = new CustomEventResponse(this.eventId,this.eventForm.get("title")?.value,this.eventForm.get("subjects")?.value,this.authService.userProfile.value.userId, 
+      /*let event = new CustomEventResponse(this.eventId,this.eventForm.get("title")?.value,this.eventForm.get("subjects")?.value,this.authService.userProfile.value.userId, 
       this.eventForm.get("attendees")?.value, this.eventForm.get("groups")?.value,this.eventForm.get("dayOfWeek")?.value,this.eventForm.get("classPeriod")?.value,
-      this.eventForm.get("eventType")?.value, isOnline,this.eventForm.get("roomNumber")?.value, startTime,endTime);
+      this.eventForm.get("eventType")?.value, isOnline,this.eventForm.get("roomNumber")?.value, startTime,endTime);*/
   
       /*this.scheduleService.updateEvent(this.eventId,event).subscribe(() => {
         this.router.navigateByUrl('/event-page');

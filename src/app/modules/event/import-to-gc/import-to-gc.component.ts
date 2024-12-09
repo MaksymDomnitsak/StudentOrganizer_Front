@@ -8,7 +8,7 @@ import { Group } from 'src/app/models/group';
 import { User } from 'src/app/models/user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventCustom } from 'src/app/models/scheduleWithTime';
-import { EventGoogleCalendar } from 'src/app/models/eventGoogleCalendar';
+import { ScheduleGoogleCalendar } from 'src/app/models/scheduleGoogleCalendar';
 import { AuthService } from '../../auth/services/auth.service';
 import { GroupWithStudents } from 'src/app/models/groupWithStudents';
 import { Schedule } from 'src/app/models/schedule';
@@ -59,7 +59,7 @@ export class ImportToGCComponent {
     selectedEmails.push(...attendees);
     const summary = this.scheduleWithTime.subject.name + " (" + grps.join(", ") + ")";
     const uniqueEmails = Array.from(new Set(selectedEmails));
-    const event = new EventGoogleCalendar(summary,this.eventForm.get('description')?.value,this.eventForm.get('location')?.value,
+    const event = new ScheduleGoogleCalendar(summary,this.eventForm.get('description')?.value,this.eventForm.get('location')?.value,
     this.eventForm.get('startDate')!.value, this.eventForm.get('frequency')!.value,this.eventForm.get('repeats')!.value,uniqueEmails
     ,this.eventForm.get('conference')!.value,this.utils.startTimeFromNumber(this.scheduleWithTime.lessonOrder)
     ,this.utils.endTimeFromNumber(this.scheduleWithTime.lessonOrder), this.scheduleWithTime.id);
@@ -70,9 +70,7 @@ export class ImportToGCComponent {
   summaryCheck(data: Schedule){
     this.scheduleWithTime=data;
     this.eventForm.get('summary')?.setValue(this.scheduleWithTime.subject.name);
-    this.eventForm.get('groups')?.setValue([this.scheduleWithTime.group.id, ]);
-    
-  //}
+    this.eventForm.get('groups')?.setValue([this.scheduleWithTime.group.name, ]);
 
   }
 }

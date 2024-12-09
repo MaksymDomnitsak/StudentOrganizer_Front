@@ -4,13 +4,15 @@ import { GroupService } from 'src/app/services/group.service';
 import { ScheduleService } from 'src/app/services/schedule.service';
 import { StudentService } from 'src/app/services/student.service';
 import { AuthService } from '../../auth/services/auth.service';
-import { Group } from 'src/app/models/group';
 import { Student } from 'src/app/models/student';
 import { NoteService } from '../../note/services/note.service';
 import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
 import { GroupNote } from 'src/app/models/groupnote';
 import { Router } from '@angular/router';
 import { EventCustom } from 'src/app/models/scheduleWithTime';
+import { Schedule } from 'src/app/models/schedule';
+import { GroupDto } from 'src/app/models/groupdto';
+import { GroupWithStudents } from 'src/app/models/groupWithStudents';
 
 @Component({
   selector: 'app-create-group-note',
@@ -19,8 +21,8 @@ import { EventCustom } from 'src/app/models/scheduleWithTime';
 })
 export class CreateGroupNoteComponent {
   noteForm!: FormGroup;
-  schedule: EventCustom[] = [];
-  groups: Group[] = [];
+  schedule: Schedule[] = [];
+  groups: GroupWithStudents[] = [];
   students: Student[] = [];
   daysList = EXTRA_ARRAYS.weekdays;
 
@@ -31,10 +33,10 @@ export class CreateGroupNoteComponent {
      private studentService: StudentService, 
      private auth: AuthService,
      private router: Router) {
-      //this.schedule = scheduleService.getScheduleWithTimebyCreator(this.auth.userProfile.value.userId);
-      groupService.getGroupsByTeacherId(this.auth.userProfile.value.userId).subscribe((response: Group[]) => {response.forEach((item)=>this.groups.push(item));});
-      console.log(this.groups)
+      this.schedule = scheduleService.getSchedulebyTeacher(this.auth.userProfile.value.userId);
       studentService.getStudents().subscribe((response: Student[]) => {response.forEach((item)=>this.students.push(item));});
+      groupService.getGroupsWithStudents().subscribe((response: GroupWithStudents[]) => {response.forEach((item)=>this.groups.push(item));});
+      
    }
 
   ngOnInit(): void {
@@ -42,15 +44,26 @@ export class CreateGroupNoteComponent {
       title: ['', Validators.required],
       schedule: ['', Validators.required],
       body: ['', Validators.required],
-      group: [[]],
-      students: [[]]
+      groups: [[]],
+      attendees: [[]]
     });
   }
 
   onSubmit(): void {
     if (this.noteForm.valid) {
-      let note = new GroupNote(this.noteForm.get("title")?.value, this.noteForm.get("schedule")?.value, this.noteForm.get("group")?.value, this.noteForm.get("students")?.value,
-      this.noteForm.get("body")?.value);
+      const grps: number[] = this.noteForm.get('groups')?.value;
+      const selectedIDs: number[] = [];
+      this.groups.filter(group => grps.includes(group.id)) 
+      .forEach(group => {
+      const ids = group.students.map(student => student.id); 
+      selectedIDs.push(...ids); 
+      });
+      const attendees: number[] = this.noteForm.get('attendees')?.value || [];
+      selectedIDs.push(...attendees);
+      const uniqueIds = Array.from(new Set(selectedIDs));
+      console.log(this.noteForm.get('groups')?.value)
+      console.log(this.noteForm.get('attendees')?.value)
+      let note = new GroupNote(this.noteForm.get("title")?.value, this.noteForm.get("schedule")?.value, uniqueIds ,this.noteForm.get("body")?.value);
       
       console.log(note);
       this.noteService.writeGroupNotes(note);
@@ -58,7 +71,8 @@ export class CreateGroupNoteComponent {
     }
   }
 
-  readLesson(lesson:EventCustom){
-    // return lesson.subject.name+", "+this.daysList[lesson.dayOfWeek-1].toString()+", "+lesson.typeOfLesson;
+  readLesson(lesson:Schedule){
+     return lesson.subject.name+", "+this.daysList[lesson.dayOfWeek-1].toString()+", "+lesson.typeOfLesson;
   }
 }
+ 

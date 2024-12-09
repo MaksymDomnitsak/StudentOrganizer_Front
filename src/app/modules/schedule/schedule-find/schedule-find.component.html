@@ -9,8 +9,8 @@
     </div>
     <div class="col-md-4">
       <select id="groupSelect" class="form-control" formControlName="groupSelect" (change)="getScheduleByTeacherOrGroup()">
-        <option value="" selected>Виберіть групу...</option>
-        <option *ngFor="let group of groupList" [value]="group.name">{{group.name}}</option>
+        <option value="0" selected>Виберіть групу...</option>
+        <option *ngFor="let group of groupList" [value]="group.id">{{group.name}}</option>
       </select>
     </div>
     <div class="col-md-4">
@@ -20,9 +20,9 @@
     </form>
 </div>
 <div *ngIf="allSchedule == false && (findSchedule.get('groupSelect')!.value != '' || findSchedule.get('teacherSelect')!.value != ''); else elseBlock2">
-  <div class="container">
+  <div class="container table-container">
     <table id="schedule-table">
-      <caption *ngIf="findSchedule.get('groupSelect')!.value != '';else elseBlockCaption"><h1>Розклад групи {{findSchedule.get('groupSelect')!.value}}</h1></caption>
+      <caption *ngIf="findSchedule.get('groupSelect')!.value != '';else elseBlockCaption"><h1>Розклад групи {{readGroupName(findSchedule.get('groupSelect')!.value)}}</h1></caption>
       <ng-template #elseBlockCaption><caption><h1>Розклад {{teacherTitle}}</h1></caption></ng-template>
       <thead>
         <tr>

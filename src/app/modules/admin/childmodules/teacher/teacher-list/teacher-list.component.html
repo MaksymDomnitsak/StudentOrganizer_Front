@@ -3,22 +3,19 @@
     <p>
       <button class="btn btn-primary" routerLink="new">Додати викладача</button>
     </p>
+    <div class="table-container">
     <table class="table">
       <tbody>
         <div *ngIf="teachers.length != 0; else anotherBlock">
           <tr>
-            <th>Ім'я</th>
-            <th>Прізвище</th>
-            <th>По-батькові</th>
+            <th>ПІБ</th>
             <th>Email</th>
             <th>Номер телефону</th>
             <th>Події</th>
             <th colspan="2"></th>
           </tr>
           <tr *ngFor="let teacher of teachers; index as ind">
-            <td>{{ teacher.firstName }}</td>
-            <td>{{ teacher.lastName }}</td>
-            <td>{{ teacher.patronymicName }}</td>
+            <td>{{ teacher.lastName+ " "+teacher.firstName+" "+teacher.patronymicName }}</td>
             <td>{{ teacher.email }}</td>
             <td>{{ teacher.phoneNumber }}</td>
             <td>{{ isEventer(teacher) }}</td>
@@ -49,5 +46,6 @@
         </ng-template>
       </tbody>
     </table>
+  </div>
     <button class="btn btn-primary" routerLink="..">Назад до списку</button>
   </div>

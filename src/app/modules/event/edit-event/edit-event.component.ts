@@ -15,6 +15,8 @@ import { UserService } from 'src/app/services/user.service';
 import { CustomEventResponse } from 'src/app/models/customEventResponse';
 import { ExtraUtils } from 'src/app/services/utils';
 import { Schedule } from 'src/app/models/schedule';
+import { EventService } from 'src/app/services/event.service';
+import { GroupWithStudents } from 'src/app/models/groupWithStudents';
 
 @Component({
   selector: 'app-edit-event',
@@ -24,81 +26,67 @@ import { Schedule } from 'src/app/models/schedule';
 export class EditEventComponent {
   eventForm!: FormGroup;
   subjects: Subject[] = []; 
-  attendees: User[] = []; 
-  groups: Group[] = []; 
+  attendee: User[] = []; 
+  groups: GroupWithStudents[] = []; 
   userIds: number[] = [];
   eventId: number = 0;
   daysOfWeek = EXTRA_ARRAYS.weekdays;
   
-  constructor(private formBuilder: FormBuilder,private scheduleService:ScheduleService,private router: Router,
+  constructor(private formBuilder: FormBuilder,private eventService:EventService,private router: Router,
     private authService:AuthService,private activateRoute: ActivatedRoute, private subjectService: SubjectService,
     private groupService:GroupService,private userService:UserService, private utils:ExtraUtils)
   {    
     this.subjectService.getSubjectsByTeacherId(this.authService.userProfile.value.userId).subscribe((data: Subject[]) => data.forEach((item) => this.subjects.push(item)))
-    this.groupService.getGroups().subscribe((data: Group[]) => data.forEach((item) => this.groups.push(item)));
-    this.userService.getUsers().subscribe((data: User[]) => data.forEach((item) => this.attendees.push(item)));
-    //this.scheduleService.getById(activateRoute.snapshot.params['id']).subscribe((data: Schedule) => {this.setFormValues(data);});
+    this.groupService.getGroupsWithStudents().subscribe((data: GroupWithStudents[]) => data.forEach((item) => this.groups.push(item)));
+    this.userService.getUsers().subscribe((data: User[]) => data.forEach((item) => this.attendee.push(item)));
+    this.eventService.getById(activateRoute.snapshot.params['id']).subscribe((data: EventCustom) => {this.setFormValues(data);});
   
   }
 
   ngOnInit() {
     this.eventForm = this.formBuilder.group({
       title: ['', Validators.required],
-      subjects: [''],
+      subjects: [0],
       attendees: [[]],
-      groups: [''],
-      dayOfWeek: ['', Validators.required],
-      timeOption: ['timeRange'],
-      startTime: [''],
-      endTime: [''],
-      classPeriod: [''],
-      eventType: ['', Validators.required],
+      groups: [[]],
+      startTime: ['', Validators.required],
+      endTime: ['', Validators.required],
       eventMode: ['online'],
-      roomNumber: ['']
-    });
+      roomNumber: ['']});
   }
 
   setFormValues(data: EventCustom){
     this.eventId = data.id;
-    this.eventForm.get('subjects')?.setValue(data.subject.id);
-    // this.eventForm.get('title')?.setValue(data.customTitle);
-    // this.eventForm.get('groups')?.setValue(data.group.id);
-    // this.eventForm.get('startTime')?.patchValue(data.startTime);
-    // this.eventForm.get('endTime')?.setValue(data.endTime);
-    // this.eventForm.get('classPeriod')?.setValue(data.lessonOrder);
-    // this.eventForm.get('eventType')?.setValue(data.typeOfLesson);
-    // this.eventForm.get('eventMode')?.setValue(data.online == true ? 'online' : 'offline');
-    // this.eventForm.get('roomNumber')?.setValue(data.auditoryNumber);
-    // this.eventForm.get('dayOfWeek')?.setValue(data.dayOfWeek);
-    // console.log(data.lessonOrder);
-    // if(data.lessonOrder !== undefined && data.lessonOrder !== null){
-    //   this.eventForm.get('timeOption')?.setValue("classPeriods");
-    // }
-    data.attendees.forEach((user) => {
-        this.userIds.push(user.id);
-    });
-    this.eventForm.get('attendees')?.setValue(this.userIds);
-    
+    if(data.subject != null && data.subject != undefined) this.eventForm.get('subjects')?.setValue(data.subject.id);
+    this.eventForm.get('title')?.setValue(data.title);
+    this.eventForm.get('startTime')?.setValue(data.startTime);
+    this.eventForm.get('endTime')?.setValue(data.endTime);
+    if(data.isOnline == false) {
+      this.eventForm.get('eventMode')?.setValue('offline');
+      this.eventForm.get('roomNumber')?.setValue(data.auditoryNumber);
+    }
+    const userIds = data.attendees.map((user) => user.id);
+    this.eventForm.get('attendees')?.setValue(userIds);
     }
 
     updateEvent() {
       let isOnline: boolean = this.eventForm.get("eventMode")?.value == 'online' ? true : false;
-      let startTime: string;
-      let endTime: string;
-      if(this.eventForm.get('timeOption')!.value === 'timeRange'){
-        startTime = this.eventForm.get("startTime")?.value;
-        endTime = this.eventForm.get("endTime")?.value
-      }else{
-        startTime = this.utils.startTimeFromNumber(this.eventForm.get("classPeriod")?.value);
-        endTime = this.utils.endTimeFromNumber(this.eventForm.get("classPeriod")?.value);
-      }
+      const grps: number[] = this.eventForm.get('groups')?.value;
+      const selectedIDs: number[] = [];
+      this.groups.filter(group => grps.includes(group.id)) 
+      .forEach(group => {
+      const ids = group.students.map(student => student.id); 
+      selectedIDs.push(...ids); 
+      });
+      const attendees: number[] = this.eventForm.get('attendees')?.value || [];
+      selectedIDs.push(...attendees);
+      const uniqueEmails = Array.from(new Set(selectedIDs));
       let event = new CustomEventResponse(this.eventId,this.eventForm.get("title")?.value,this.eventForm.get("subjects")?.value,this.authService.userProfile.value.userId, 
-      this.eventForm.get("attendees")?.value, this.eventForm.get("groups")?.value,this.eventForm.get("dayOfWeek")?.value,this.eventForm.get("classPeriod")?.value,
-      this.eventForm.get("eventType")?.value, isOnline,this.eventForm.get("roomNumber")?.value, startTime,endTime);
+      uniqueEmails, isOnline,this.eventForm.get("roomNumber")?.value, this.eventForm.get("startTime")?.value,this.eventForm.get("endTime")?.value);
   
-      /*this.scheduleService.updateEvent(this.eventId,event).subscribe(() => {
+      this.eventService.updateEvent(this.eventId,event).subscribe(() => {
         this.router.navigateByUrl('/event-page');
-      });*/
+      });
       
   
     }

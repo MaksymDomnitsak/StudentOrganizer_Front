@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
-import { Group } from 'src/app/models/group';
 import { Subject } from 'src/app/models/subject';
 import { User } from 'src/app/models/user';
 import { GroupService } from 'src/app/services/group.service';
-import { ScheduleService } from 'src/app/services/schedule.service';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from '../../auth/services/auth.service';
 import { Router } from '@angular/router';
@@ -13,6 +11,8 @@ import { SubjectService } from 'src/app/services/subject.service';
 import { CustomEventResponse } from 'src/app/models/customEventResponse';
 import { ExtraUtils } from 'src/app/services/utils';
 import { atLeastOneValidator } from 'src/app/formvalidators/atLeastOneValidator';
+import { GroupWithStudents } from 'src/app/models/groupWithStudents';
+import { EventService } from 'src/app/services/event.service';
 
 @Component({
   selector: 'app-create-event',
@@ -23,13 +23,13 @@ export class CreateEventComponent implements OnInit {
   eventForm!: FormGroup;
   subjects: Subject[] = []; 
   attendees: User[] = []; 
-  groups: Group[] = []; 
+  groups: GroupWithStudents[] = []; 
   daysOfWeek = EXTRA_ARRAYS.weekdays;
 
-  constructor(private formBuilder: FormBuilder,private groupService:GroupService, private scheduleService: ScheduleService, private authService:AuthService,
+  constructor(private formBuilder: FormBuilder,private groupService:GroupService, private eventService:EventService, private authService:AuthService,
     private userService:UserService,private router:Router, private subjectService: SubjectService, private utils:ExtraUtils) {
       this.subjectService.getSubjectsByTeacherId(this.authService.userProfile.value.userId).subscribe((data: Subject[]) => data.forEach((item) => this.subjects.push(item)))
-      this.groupService.getGroupsEnabled().subscribe((data: Group[]) => data.forEach((item) => this.groups.push(item)));
+      this.groupService.getGroupsWithStudents().subscribe((data: GroupWithStudents[]) => data.forEach((item) => this.groups.push(item)));
       this.userService.getUsers().subscribe((data: User[]) => data.forEach((item) => this.attendees.push(item)));
    }
 
@@ -47,22 +47,21 @@ export class CreateEventComponent implements OnInit {
 
   createEvent() {
     let isOnline: boolean = this.eventForm.get("eventMode")?.value == 'online' ? true : false;
-    let startTime: string;
-    let endTime: string;
-    if(this.eventForm.get('timeOption')!.value === 'timeRange'){
-      startTime = this.eventForm.get("startTime")?.value;
-      endTime = this.eventForm.get("endTime")?.value
-    }else{
-      startTime = this.utils.startTimeFromNumber(this.eventForm.get("classPeriod")?.value);
-      endTime = this.utils.endTimeFromNumber(this.eventForm.get("classPeriod")?.value);
-    }
+    const grps: number[] = this.eventForm.get('groups')?.value;
+    const selectedIDs: number[] = [];
+    this.groups.filter(group => grps.includes(group.id)) 
+    .forEach(group => {
+    const ids = group.students.map(student => student.id); 
+    selectedIDs.push(...ids); 
+    });
+    const attendees: number[] = this.eventForm.get('attendees')?.value || [];
+    selectedIDs.push(...attendees);
     let event = new CustomEventResponse(0,this.eventForm.get("title")?.value,this.eventForm.get("subjects")?.value,this.authService.userProfile.value.userId, 
-    this.eventForm.get("attendees")?.value, this.eventForm.get("groups")?.value,this.eventForm.get("dayOfWeek")?.value,this.eventForm.get("classPeriod")?.value,
-    this.eventForm.get("eventType")?.value, isOnline,this.eventForm.get("roomNumber")?.value, startTime,endTime);
+    selectedIDs, isOnline,this.eventForm.get("roomNumber")?.value, this.eventForm.get("startTime")?.value,this.eventForm.get("endTime")?.value);
 
-    /*this.scheduleService.createEvent(event).subscribe(() => {
+    this.eventService.createEvent(event).subscribe(() => {
       this.router.navigateByUrl('/event-page');
-    });*/
+    });
   }
 
 }

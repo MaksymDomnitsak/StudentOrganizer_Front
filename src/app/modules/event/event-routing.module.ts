@@ -6,6 +6,7 @@ import { CreateGroupNoteComponent } from './create-group-note/create-group-note.
 import { EditEventComponent } from './edit-event/edit-event.component';
 import { ImportToGCComponent } from './import-to-gc/import-to-gc.component';
 import { ReportFormComponentComponent } from './report-form-component/report-form-component.component';
+import { ImportEventToGCComponent } from './import-event-to-gc/import-event-to-gc.component';
 
 const routes: Routes = [
   {
@@ -30,7 +31,12 @@ const routes: Routes = [
 },{
   path: "report",
   component: ReportFormComponentComponent
-}
+},
+ {
+  path: "importevent/:id",
+  component: ImportEventToGCComponent
+ }
+
 ];
 
 @NgModule({

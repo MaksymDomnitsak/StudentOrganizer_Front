@@ -29,15 +29,15 @@
     </div>
     
     <div class="form-group">
-      <label for="group">Групи</label>
-      <select multiple class="form-control" id="group" formControlName="group">
+      <label for="groups">Групи</label>
+      <select multiple class="form-control" id="groups" formControlName="groups">
         <option *ngFor="let group of groups" [value]="group.id">{{ group.name }}</option>
       </select>
     </div>
     
     <div class="form-group">
       <label for="students">Студенти</label>
-      <select multiple class="form-control" id="students" formControlName="students">
+      <select multiple class="form-control" id="students" formControlName="attendees">
         <option *ngFor="let student of students" [value]="student.id">{{ student.firstName+" "+student.lastName }}</option>
       </select>
     </div>

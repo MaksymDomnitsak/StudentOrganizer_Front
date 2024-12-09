@@ -30,7 +30,7 @@ export class UpdNoteComponent {
     {    
       this.id = activateRoute.snapshot.params['id'];
       noteService.loadNote(this.id).subscribe((data: Note) => {this.setFormValues(data);});
-      this.scheduleList=scheduleService.getSchedulebyGroup(authService.loadUserFromLocalStorage().groupId);
+      this.scheduleList=scheduleService.getSchedulebyGroup(localStorage.getItem("groupId")!);
     }
 
     readLesson(lesson:Schedule){
@@ -38,7 +38,8 @@ export class UpdNoteComponent {
     }
 
     updateDB(){
-      this.noteService.updateNote(this.id,this.title,this.body,this.lessonId,this.isFinished,this.authService.loadUserFromLocalStorage().userId)
+      console.log(this.lessonId);
+      this.noteService.updateNote(this.id,this.title,this.body,this.lessonId,this.isFinished,this.authService.userProfile.value.userId)
       .subscribe(()=> {
         this.router.navigateByUrl('/note');
       });
@@ -46,9 +47,11 @@ export class UpdNoteComponent {
 
       
     setFormValues(data:Note){
-      this.title = data.title;
-      this.body = data.body;
-      this.lessonId = data.lesson.id;
-      this.isFinished = data.finished;
+      const info: Note = data;
+      console.log(info)
+      this.title = info.title;
+      this.body = info.body;
+      this.lessonId = info.lesson.id;
+      this.isFinished = info.finished;
     }
 }

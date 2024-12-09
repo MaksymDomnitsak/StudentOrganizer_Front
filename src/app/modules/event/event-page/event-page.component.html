@@ -1,7 +1,7 @@
 <div class="container">
 <p>
   <button class="btn btn-primary" routerLink="new">Створити подію</button>
-  <button *ngIf="userRole == 'TEACHER'" class="btn btn-primary" routerLink="newNote">Групове створення нотаток</button>
+  <button *ngIf="userRole == 'ADMIN' || userRole == 'TEACHER'" class="btn btn-primary" routerLink="newNote">Групове створення нотаток</button>
   <button *ngIf="userRole == 'ADMIN' || userRole == 'TEACHER'" class="btn btn-primary" routerLink="report" >Звіт за тиждень</button>
 </p>
 <ul class="nav nav-tabs"> <!--тільки для викладача зробити-->
@@ -26,8 +26,8 @@
   
   <table>
     <tr><th>Предмет</th><th>Група</th>
-      <th>День тижня</th><th>Початок та кінець події</th>
-      <th>Тип події</th><th>Номер аудиторії</th><th></th></tr>
+      <th>День тижня</th><th>Початок та кінець заняття</th>
+      <th>Тип заняття</th><th>Номер аудиторії</th><th></th></tr>
       <tr *ngFor="let event of schedule; index as ind">{{setValues(event)}}
       <td>{{subjectName}} </td>
       <td>{{groupName}} </td>
@@ -63,10 +63,10 @@
       <tr *ngFor="let event of events; index as ind">{{setValuesOfCustom(event)}}
         <td>{{title}}</td>
       <td>{{subjectName}} </td>
-      <td>{{startTime+" - "+endTime}} </td>
+      <td><p>{{startTime}}</p><p>{{endTime}} </p></td>
       <td>{{auditory}} </td><td>
         <button class="btn btn-primary" [routerLink]="['edit/'+event.id]">Змінити</button>
-        <button class="btn btn-primary" [routerLink]="['import/'+event.id]">Імпорт в GC</button>
+        <button class="btn btn-primary" [routerLink]="['importevent/'+event.id]">Імпорт в GC</button>
         <button class="btn btn-primary" (click)="openConfirmDeleteModal(event,ind)">
           Видалити
         </button>

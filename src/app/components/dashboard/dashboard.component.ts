@@ -7,6 +7,8 @@ import { EXTRA_ARRAYS } from 'src/app/models/extraarrays';
 import { ScheduleFindFormDataService } from 'src/app/modules/schedule/services/schedule-find-form-data-service.service';
 import { ExtraUtils } from 'src/app/services/utils';
 import { Router } from '@angular/router';
+import { group } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,6 +35,7 @@ export class DashboardComponent implements AfterContentChecked,AfterViewChecked,
     private ex:ExportScheduleService, 
     private router: Router,
     scheduleConverter: ScheduleFindFormDataService,
+    private http: HttpClient,
     utils:ExtraUtils){
       this.schdlConverter = scheduleConverter;
       this.utils = utils;
@@ -61,7 +64,12 @@ export class DashboardComponent implements AfterContentChecked,AfterViewChecked,
 
  readDB(){
     if(this.auth.loadRole() == "STUDENT"){
-      this.schdlConverter.schedule = this.service.getSchedulebyGroup(this.auth.userProfile.value.groupId);
+      this.http.get<number>("api/studgroups/api/students/byEmail?email="+this.auth.userProfile.value.email).subscribe({
+        next: (id: number) => {
+          localStorage.setItem("groupId",id.toString())
+        }
+      })
+      this.schdlConverter.schedule = this.service.getSchedulebyGroup(localStorage.getItem("groupId")!);
     }else if(this.auth.loadRole() == "TEACHER"){
       this.schdlConverter.schedule = this.service.getSchedulebyTeacher(this.auth.userProfile.value.userId);
     }

@@ -7,10 +7,12 @@ import { Subject } from '../models/subject';
 })
 export class SubjectService {
 
+  PROXY_URL: string = "/api/scheduleteachsubj";
+
   constructor(private http: HttpClient) { }
 
   getSubjectsByTeacherId(teacherId: number) {
-    const url = "/api/subject?teacherId="+teacherId;
+    const url = this.PROXY_URL+"/api/schedule/getSubjects?teacherId="+teacherId;
     return this.http.get<Subject[]>(url);
   }
 }

@@ -8,6 +8,7 @@ import { EditEventComponent } from './edit-event/edit-event.component';
 import { ImportToGCComponent } from './import-to-gc/import-to-gc.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportFormComponentComponent } from './report-form-component/report-form-component.component';
+import { ImportEventToGCComponent } from './import-event-to-gc/import-event-to-gc.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { ReportFormComponentComponent } from './report-form-component/report-for
     CreateGroupNoteComponent,
     EditEventComponent,
     ImportToGCComponent,
-    ReportFormComponentComponent
+    ReportFormComponentComponent,
+    ImportEventToGCComponent
   ],
   imports: [
     CommonModule,

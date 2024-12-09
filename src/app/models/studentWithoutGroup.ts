@@ -1,4 +1,4 @@
-export interface Student{
+export interface StudentWithoutGroup{
     id: number;
     firstName: string;
     lastName: string;

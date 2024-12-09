@@ -8,9 +8,9 @@ import { Student } from '../models/student';
 export class StudentService {
 
   constructor(private http: HttpClient) { }
-
+  PROXY_URL = "/api/studgroups";
   getStudents() {
-    const url = "/api/student";
-    return this.http.get<Student[]>(url);
+    const url = "/api/students";
+    return this.http.get<Student[]>(this.PROXY_URL+url);
   }
 }
